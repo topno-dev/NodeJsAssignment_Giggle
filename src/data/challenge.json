@@ -1,0 +1,32 @@
+[
+    {
+        "id": "1",
+        "title": "Challenge Dance 1",
+        "videoUrl": "www.gigglle.com/video/challenge1",
+        "stickers":["😀","😁","😂","🤣"]
+    },
+    {
+        "id": "2",
+        "title": "Challenge Dance 2",
+        "videoUrl": "www.gigglle.com/video/challenge2",
+        "stickers":["😀","😁","😂","🤣"]
+    },
+    {
+        "id": "3",
+        "title": "Challenge Art 1",
+        "videoUrl": "www.gigglle.com/video/challenge3",
+        "stickers":["😀","😁","😂","🤣"]
+    },
+    {
+        "id": "4",
+        "title": "Challenge Singing 1",
+        "videoUrl": "www.gigglle.com/video/challenge4",
+        "stickers":["😀","😁","😂","🤣"]
+    },
+    {
+        "id": "5",
+        "title": "Challenge Dance 3",
+        "videoUrl": "www.gigglle.com/video/challenge5",
+        "stickers":["😀","😁","😂","🤣"]
+    }
+]
