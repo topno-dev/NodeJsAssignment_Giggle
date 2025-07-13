@@ -1,6 +1,6 @@
 # 🎥 Gigglle Challenge Backend (Node.js + Express.js)
 
-This is a lightweight backend implementation for a simplified challenge submission flow used in the **Gigglle** app. It supports uploading videos, selecting stickers, previewing content, and submitting entries with simulated moderation.
+This is a backend implementation for a simplified challenge submission flow used in the **Gigglle** app. It supports uploading videos, selecting stickers, previewing content, and submitting entries with simulated moderation. It also incorporates a frontend webpage / html using ejs to simplify testing the code. All the requests can be accessed from this frontend along with it being accessible by Postman requests. cURL have been stored in the curl.txt for speedy testing.
 
 ## ⚙️ Setup Instructions
 
