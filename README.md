@@ -21,6 +21,8 @@ node server.js
 ```
 Server starts on `http://localhost:3000/`
 
+### 4. Open `http://localhost:3000/` on web browser or test the api using Postman
+
 ## ✅ Features Completed
 
 ### 🔹 Core API Endpoints
@@ -57,7 +59,7 @@ Server starts on `http://localhost:3000/`
 #### Additional Features
 - Delayed processing using middleware (2-second delay on submission)
 - ASCII art printed on server startup
-- Dynamic console log area on the homepage (rendered via DOM)
+- Created a frontend to get have an easier look 
 
 ## ⚠️ Assumptions & Tradeoffs
 
