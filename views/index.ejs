@@ -3,9 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Challenge Submission Portal</title>
+    <link rel="stylesheet" href="/styles/main.css">
+
 </head>
 <body>
-    Hello World
+    <div class="container">
+        <h1>Challenges</h1>
+
+        <h2>Preview Upload</h2>
+        <form id="previewForm" action="/preview" method="POST" enctype="multipart/form-data" target="_blank">
+            <input type="file" name="file" required />
+            <button type="submit">Upload & Preview</button>
+        </form>
+
+        <h2>Get Challenges</h2>
+        <button onclick="fetchChallenges()">Fetch /challenges</button>
+
+        <h2>Get Submissions</h2>
+        <button onclick="fetchSubmissions()">Fetch /submissions</button>
+
+        <h2>Console Output</h2>
+        <pre id="consoleBox">Press challenges or submission button to see output in this box or on the browser console</pre>
+        </div>
+    <script src="/scripts/index.js"></script>
 </body>
 </html>

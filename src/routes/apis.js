@@ -3,11 +3,14 @@ const router = express.Router()
 const multer = require('multer')
 const { getVideoDurationInSeconds } = require('get-video-duration')
 
+const moderationStatuses = ['pending','approved','rejected']
 var moderationQue = []
-var videoStorageQue = []
+// var videoStorageQue = []
+var uniqueName = ""
 
 var fs = require('fs')
 const { assert } = require('console')
+const path = require('path')
 
 // Load JSON File
 var sampleChallengeJsonObject = JSON.parse(fs.readFileSync('./src/data/challenge.json'))
@@ -21,20 +24,26 @@ const multerStorage = multer.diskStorage({
         return cb(null, './src/uploads')
     },
     filename: function(req, file, cb){
-        return cb(null, `${Date.now()}_${file.originalname}`)
+        uniqueName = `${Date.now()}_${file.originalname}`
+        return cb(null, uniqueName)
     }
 })
 
+// Can store in memory
 const multerMemoryStorage = multer.memoryStorage()
 
-// const fileFilter = (req, file, cb) => {
-//     if (file.mimetype.startsWith('video/')){
-//         cb(null, true)
-//     } else {
-//         cb(new Error('Invalid file type, only videos are accepted'), false)
-//     }
-// }
+/*
 
+File Filter to use if we want a particular type of file, not implemented here
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('video/')){
+        cb(null, true)
+    } else {
+        cb(new Error('Invalid file type, only videos are accepted'), false)
+    }
+}
+*/
 const upload = multer({
     storage: multerMemoryStorage,
     limits: {
@@ -43,41 +52,72 @@ const upload = multer({
     // fileFilter: fileFilter
 })
 
-router.post('/submissions', upload.single('file'), (req, res) =>{
-    // const duration = getVideoDurationInSeconds(req.file.buffer)
-    // getVideoDurationInSeconds(req.file.destination).then((duration) => {
-    //     console.log(duration)
-    // })
-    console.log(req.file)
+const uploadDisk = multer({
+    storage: multerStorage,
+    limits: {
+        fileSize: 50000000,
+    },
+    // fileFilter: fileFilter
+})
+
+/*
+We are sending a fileDuration as a key on the request as we are simulating the 
+file duration. We will assume that the file duration is being calculated from
+the client.
+*/ 
+
+post_middleware = {
+    file_uploader : uploadDisk.single('file'),
+    delay_middleware : function(req, res, next){
+        setTimeout(() => {
+            console.log("Delaying as per requirements, delay for 2 seconds.")
+            next()
+        }, 2000)
+    }
+}
+
+router.post('/submissions', [post_middleware.delay_middleware, post_middleware.file_uploader], (req, res) =>{
     let issues = false
+    maximumTime = 15 // Seconds
     if (req.file == undefined) {
         issues = true
-        res.json({"result":"Please upload a video file, no file was uploaded"})
+        return res.json({"result":"Please upload a video file, no file was uploaded"})
     }
 
-    if (!req.file.mimetype.startsWith('video/')){
+    if (!req.file.mimetype === 'video/mp4' || !req.file.mimetype === 'application/mp4'){
         issues = true
-        res.json({"result":"Please upload a video file, wrong file type was uploaded"})
+        console.log(req.file.mimetype)
+        return res.json({"result":"Please upload a video file, wrong file type was uploaded"})
     }
 
     videoId = moderationQue.length
     timeUploaded = `${Date.now()}`
-    fileName = timeUploaded + '_' + req.file.originalname
+    // fileName = timeUploaded + '_' + req.file.originalname
+    fileName = uniqueName
     fileDuration = req.body.fileDuration
-    fileBuffer = req.file.buffer
+    // Only to use when using memory storage using multer
+    //fileBuffer = req.file.buffer
+    stickerArray = req.body.stickers
+    moderationStatus = moderationStatuses[Math.floor(Math.random() * moderationStatuses.length)]
+    stickers = []
 
-    if (fileDuration > 15){
+    // If stickers exist, push stickers into stickers array, we have this due to /challenges having stickers
+    if (stickerArray != undefined){
+        for (const char of stickerArray){
+            stickers.push(char)
+        }
+    }
+
+    if (fileDuration > maximumTime){
         issues = true
-        res.json({"result":"Failed: Video is longer than 15 seconds. Upload a file shorter than or equal to 15 seconds"})
+        return res.json({"result":"Failed: Video is longer than 15 seconds. Upload a file shorter than or equal to 15 seconds"})
     }
 
     if (issues === false){
-        uploadFile = {videoId: videoId,timeUploaded:timeUploaded, fileDuration: fileDuration,fileName:fileName}
+        uploadFile = {videoId: videoId,timeUploaded:timeUploaded, fileDuration: fileDuration,fileName:fileName, stickers: stickers, moderationStatus: moderationStatus}
         moderationQue.push(uploadFile)
-        videoStorageQue.push(fileBuffer)
-        console.log(moderationQue)
-        console.log(videoStorageQue)
-        res.json({"result":"Submission pendind review by moderator"})
+        // videoStorageQue.push(fileBuffer)
+        return res.json({"result":"Submission pendind review by moderator"})
     }
 
 })
@@ -88,8 +128,25 @@ router.get("/submissions", (req, res)=>{
 
 // Optional Bonus Feature
 
-router.post("/preview", (req, res)=>{
-    res.send("Optional Bonus feature preview post")
+previewUploader = multer({storage: multerStorage})
+
+router.post("/preview",previewUploader.single('file'),(req, res)=>{
+    if (!req.file) {
+        return res.status(400).json({ result: "No video uploaded" })
+    }
+
+    const videoPath = '/uploads/' + req.file.filename
+    const fileName = req.file.originalname 
+    console.log(fileName, req.file)
+
+    const fullPath = path.resolve(__dirname, '..', 'uploads', fileName)
+    console.log(fullPath)
+    res.render('preview', {
+        videoPath: videoPath,
+        fileName: fileName,
+        originalName: req.file.originalname,
+        fullPath: fullPath
+    })
 })
 
 module.exports = router

@@ -1,0 +1,21 @@
+curl --location 'http://localhost:3000/challenges'
+
+curl --location 'http://localhost:3000/submissions'
+
+curl --location 'http://localhost:3000/preview' \
+--form 'file=@"yourpath"' \
+--form 'stickers="😂🤣😁😀"'
+
+curl --location 'http://localhost:3000/preview' \
+--form 'file=@"d:yourpath"' \
+--form 'fileDuration="12"' \
+--form 'stickers="😂🤣😁😀"'
+
+curl --location 'http://localhost:3000/preview' \
+--form 'fileDuration="12"' \
+--form 'stickers="😂🤣😁😀"'
+
+curl --location 'http://localhost:3000/preview' \
+--form 'file=@"yourpath"' \
+--form 'fileDuration="16"' \
+--form 'stickers="😂🤣😁😀"'
