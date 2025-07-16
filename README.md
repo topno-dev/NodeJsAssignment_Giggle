@@ -6,7 +6,7 @@ This is a backend implementation for a simplified challenge submission flow used
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/gigglle-backend.git
+git clone https://github.com/topno-dev/NodeJsAssignment_Giggle.git
 cd gigglle-backend
 ```
 
