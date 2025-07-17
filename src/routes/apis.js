@@ -84,7 +84,7 @@ router.post('/submissions', [post_middleware.delay_middleware, post_middleware.f
         return res.json({"result":"Please upload a video file, no file was uploaded"})
     }
 
-    if (!req.file.mimetype === 'video/mp4' || !req.file.mimetype === 'application/mp4'){
+    if (req.file.mimetype !== 'video/mp4' && req.file.mimetype !== 'application/mp4'){
         issues = true
         console.log(req.file.mimetype)
         return res.json({"result":"Please upload a video file, wrong file type was uploaded"})
